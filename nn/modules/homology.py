@@ -4,11 +4,11 @@ from torch.utils.tensorboard import SummaryWriter
 
 from dataclasses import dataclass
 
-from src.intrinsic.utils.math import unique_points
-from src.intrinsic.utils.tensorboard import draw_heatmap, plot_persistence, plot_persistence_each, plot_betti_each
+from utils.math import unique_points
+from utils.tensorboard import draw_heatmap, plot_persistence, plot_persistence_each, plot_betti_each
 from .base import IntrinsicBase
 from .module import IntrinsicModule
-from src.intrinsic.functional.homology import vr_diagrams, diagrams_barycenter, betti, persistence_norm, persistence_entropy, pairwise_dist, mtd, rtd
+from functional.homology import vr_diagrams, diagrams_barycenter, betti, persistence_norm, persistence_entropy, pairwise_dist, mtd, rtd
 
 
 @dataclass
