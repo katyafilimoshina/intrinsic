@@ -8,6 +8,18 @@ from utils.matching import matching_alg
 
 
 def vr_diagrams(X: np.array, maxdim: int = 1, distances: bool = False, gens: bool = False):
+    """
+    Computes Vietoris-Rips persistence diagrams for a given point cloud or distance matrix.
+
+    Parameters:
+    X (np.array): Input data, either a point cloud or a distance matrix.
+    maxdim (int): Maximum dimension of the homology group to compute.
+    distances (bool): Whether X is a distance matrix.
+    gens (bool): Whether to return the generators of the persistent homology.
+
+    Returns:
+    list[np.ndarray]: Persistence diagrams and optionally the generators.
+    """
     if not gens:
         return ripser_parallel(X, maxdim=maxdim, metric='precomputed' if distances else 'euclidean')['dgms']
     ret = ripser_parallel(X, maxdim=maxdim, metric='precomputed' if distances else 'euclidean', return_generators=True)
@@ -15,6 +27,15 @@ def vr_diagrams(X: np.array, maxdim: int = 1, distances: bool = False, gens: boo
 
 
 def drop_inf(diag: list[np.ndarray]) -> list[np.ndarray]:
+    """
+    Removes infinite values from persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagram.
+
+    Returns:
+    list[np.ndarray]: Cleaned persistence diagram without infinite values.
+    """
     for dim in range(len(diag)):
         mask = inf_mask(diag[dim])
         if mask.shape:
@@ -23,6 +44,15 @@ def drop_inf(diag: list[np.ndarray]) -> list[np.ndarray]:
 
 
 def diagrams_barycenter(diag: list[list[np.ndarray]]) -> list[np.ndarray]:
+    """
+    Computes the barycenters of a list of persistence diagrams.
+
+    Parameters:
+    diag (list[list[np.ndarray]]): A list of lists of persistence diagrams.
+
+    Returns:
+    list[np.ndarray]: The barycenters of the persistence diagrams.
+    """
     diag = list(map(drop_inf, diag))
     bary = []
     for dim in range(len(diag)):
@@ -31,6 +61,16 @@ def diagrams_barycenter(diag: list[list[np.ndarray]]) -> list[np.ndarray]:
 
 
 def betti(diag, n_bins: int = 100):
+    """
+    Computes the Betti numbers of the persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagram.
+    n_bins (int): Number of bins for the Betti curve.
+
+    Returns:
+    np.ndarray: An array of Betti numbers.
+    """
     diag = drop_inf(diag)
     global_min = min(diag[dim].min() if diag[dim].size else 0 for dim in range(len(diag)))
     global_max = max(diag[dim].max() if diag[dim].size else 0 for dim in range(len(diag)))
@@ -43,10 +83,28 @@ def betti(diag, n_bins: int = 100):
 
 
 def euler(bc: np.ndarray):
+    """
+    Computes the Euler characteristic from Betti curves.
+
+    Parameters:
+    bc (np.ndarray): Betti curves.
+
+    Returns:
+    int: Euler characteristic.
+    """
     return bc[::2].sum(axis=-2) - bc[1::2].sum(axis=-2)
 
 
 def persistence_entropy(diag):
+    """
+    Computes the persistence entropy of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagram.
+
+    Returns:
+    np.ndarray: Persistence entropy.
+    """
     diag = drop_inf(diag)
     L = persistence_norm(diag)
     prob = [(diag[dim][:, 1] - diag[dim][:, 0]) / L[dim] if diag[dim].size else None for dim in range(len(diag))]
@@ -54,6 +112,15 @@ def persistence_entropy(diag):
 
 
 def persistence_norm(diag: list[np.ndarray]) -> np.ndarray:
+    """
+    Computes the persistence norm of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+
+    Returns:
+    np.ndarray: Persistence norms.
+    """
     diag = drop_inf(diag)
     z = np.zeros(len(diag))
     for dim in range(len(diag)):
@@ -63,11 +130,31 @@ def persistence_norm(diag: list[np.ndarray]) -> np.ndarray:
 
 
 def total_persistence(diag: list[np.ndarray], q: float) -> float:
+    """
+    Computes the total persistence of persistence diagrams raised to the power `q`.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    q (float): Exponent.
+
+    Returns:
+    float: Total persistence.
+    """
     diag = np.vstack(drop_inf(diag))
     return np.power(diag[:, 1] - diag[:, 0], q).sum()
 
 
 def amplitude(diag: list[np.ndarray], p: float) -> float:
+    """
+    Computes the amplitude of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    p (float): Exponent.
+
+    Returns:
+    float: Amplitude.
+    """
     diag = np.vstack(drop_inf(diag))
     if p == np.inf:
         return np.max(diag[:, 1] - diag[:, 0]) / np.sqrt(2)
@@ -75,6 +162,16 @@ def amplitude(diag: list[np.ndarray], p: float) -> float:
 
 
 def landscapes(diag: list[np.ndarray], n_points: int = 100) -> np.ndarray:
+    """
+    Computes the persistence landscapes of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    n_points (int): Number of points in the landscape.
+
+    Returns:
+    np.ndarray: Persistence landscapes.
+    """
     diag = np.vstack(drop_inf(diag))
     global_min, global_max = diag.min(), diag.max()
     steps = np.linspace(global_min, global_max, num=n_points, endpoint=True)
@@ -83,6 +180,17 @@ def landscapes(diag: list[np.ndarray], n_points: int = 100) -> np.ndarray:
 
 
 def landscape_norm(diag: list[np.ndarray], n_points: int = 100, p: float = np.inf) -> float:
+    """
+    Computes the norm of persistence landscapes.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    n_points (int): Number of points in the landscape.
+    p (float): Exponent.
+
+    Returns:
+    float: Landscape norm.
+    """
     l = landscapes(drop_inf(diag), n_points)
     return np.linalg.norm(np.linalg.norm(l, p, axis=-1), p)
 
@@ -99,6 +207,18 @@ def pairwise_dist(bc: np.array):
 
 
 def wasserstein_distance(diagX: list[np.ndarray], diagY: list[np.ndarray], q: float = np.inf, matching: bool = False) -> [tuple[float, np.ndarray], float]:
+    """
+    Computes the Wasserstein distance between two persistence diagrams.
+
+    Parameters:
+    diagX (list[np.ndarray]): First persistence diagram.
+    diagY (list[np.ndarray]): Second persistence diagram.
+    q (float): Exponent for the distance.
+    matching (bool): Whether to return the matching.
+
+    Returns:
+    tuple[float, np.ndarray], float: Wasserstein distance and optionally the matching.
+    """
     diagX, diagY = np.vstack(drop_inf(diagX)), np.vstack(drop_inf(diagY))
     diagXp, diagYp = diagX.mean(axis=1) / 2, diagY.mean(axis=1) / 2
     mat = matching_alg(extended_distance(diagX, diagY, q))
