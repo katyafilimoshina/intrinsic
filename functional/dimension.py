@@ -11,7 +11,7 @@ from sklearn.cluster import KMeans
 from .magnitude import magnitude
 from .homology import vr_diagrams, drop_inf
 from .information import entropy
-from utils.math import beta1, beta1_intercept
+from intrinsic.utils.math import beta1, beta1_intercept
 
 
 def information(X: np.ndarray):
@@ -51,6 +51,17 @@ def corr(X: np.ndarray):
 
 
 def mle(X: np.ndarray, k: int = 5, distances: bool = False):
+    """
+    Computes the Maximum Likelihood Estimation (MLE) of Intrinsic dimension (ID) for the point cloud distances.
+
+    Parameters:
+    X (np.ndarray): Input point cloud with shape (n_samples, n_features).
+    k (int): Number of nearest neighbors to consider.
+    distances (bool): Whether X is already a distance matrix. If False, distances are computed.
+
+    Returns:
+    np.ndarray: ID.
+    """
     nn = NearestNeighbors(n_neighbors=k, metric='precomputed' if distances else 'minkowski').fit(X)
     dist, _ = nn.kneighbors()
 
