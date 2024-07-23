@@ -113,13 +113,13 @@ def persistence_entropy(diag):
 
 def persistence_norm(diag: list[np.ndarray]) -> np.ndarray:
     """
-    Computes the persistence norm of persistence diagrams.
+    Computes the sums of lifetimes for all homology dimensions of persistence diagrams.
 
     Parameters:
     diag (list[np.ndarray]): A list of persistence diagrams.
 
     Returns:
-    np.ndarray: Persistence norms.
+    np.ndarray: Sums of lifetimes for each homology dimension.
     """
     diag = drop_inf(diag)
     z = np.zeros(len(diag))
@@ -131,7 +131,7 @@ def persistence_norm(diag: list[np.ndarray]) -> np.ndarray:
 
 def total_persistence(diag: list[np.ndarray], q: float) -> float:
     """
-    Computes the total persistence of persistence diagrams raised to the power `q`.
+    Computes sum of the power-weighted sums of lifetimes for all homology dimensions raised to the power `q`.
 
     Parameters:
     diag (list[np.ndarray]): A list of persistence diagrams.
@@ -195,12 +195,21 @@ def landscape_norm(diag: list[np.ndarray], n_points: int = 100, p: float = np.in
     return np.linalg.norm(np.linalg.norm(l, p, axis=-1), p)
 
 
-def ls_moment(diag: list[np.ndarray]):
-    z = persistence_norm(diag)
-    return np.sum(z[::2] - z[1::2])
+# def ls_moment(diag: list[np.ndarray]):
+#     z = persistence_norm(diag)
+#     return np.sum(z[::2] - z[1::2])
 
 
 def pairwise_dist(bc: np.array):
+    """
+    Computes pairwise distance matrices for Betti curves.
+
+    Parameters:
+    bc (np.array): Betti curves.
+
+    Returns:
+    list[np.ndarray]: List of distance matrices for each dimension.
+    """
     return [
         distance_matrix(bc[:, dim], bc[:, dim]) for dim in range(bc.shape[1])
     ]
@@ -233,6 +242,16 @@ def wasserstein_distance(diagX: list[np.ndarray], diagY: list[np.ndarray], q: fl
 
 
 def frechet_mean(diag: list[np.ndarray], q: float = np.inf) -> np.ndarray:
+    """
+    Computes the Fréchet mean of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    q (float): Exponent for the distance.
+
+    Returns:
+    np.ndarray: Fréchet mean of the persistence diagrams.
+    """
     diag = drop_inf(diag)
     Y = diag[0]
     stop = False
@@ -257,17 +276,50 @@ def frechet_mean(diag: list[np.ndarray], q: float = np.inf) -> np.ndarray:
 
 
 def frechet_variance(diag: list[np.ndarray], Y: np.ndarray = None, q: float = np.inf) -> float:
+    """
+    Computes the Fréchet variance of persistence diagrams.
+
+    Parameters:
+    diag (list[np.ndarray]): A list of persistence diagrams.
+    Y (np.ndarray, optional): Fréchet mean of the persistence diagrams.
+    q (float): Exponent for the distance.
+
+    Returns:
+    float: Fréchet variance of the persistence diagrams.
+    """
     Y = Y or frechet_mean(diag, q)
     return np.sum([np.square(wasserstein_distance([d], [Y], q)) for d in diag]) / (len(diag) - 1)
 
 
 def cross_barcode(X: np.array, Y: np.array, maxdim: int = 1):
+    """
+    Computes the cross barcode of two point clouds.
+
+    Parameters:
+    X (np.array): First point cloud.
+    Y (np.array): Second point cloud.
+    maxdim (int): Maximum dimension of the homology group to compute.
+
+    Returns:
+    list[np.ndarray]: Persistence diagrams for the cross barcode.
+    """
     X = unique_points(X)
     Y = unique_points(Y)
     return vr_diagrams(np.vstack([X, Y]), maxdim=maxdim)
 
 
 def r_cross_barcode(X: np.array, Y: np.array, maxdim: int = 1):
+    """
+    Computes the relaxed cross barcode of two point clouds using distance matrices.
+
+    Parameters:
+    X (np.array): First point cloud.
+    Y (np.array): Second point cloud.
+    maxdim (int): Maximum dimension of the homology group to compute.
+
+    Returns:
+    list[np.ndarray]: Persistence diagrams for the relaxed cross barcode.
+    """
     X = unique_points(X)
     Y = unique_points(Y)
     XX = distance_matrix(X, X)
@@ -283,8 +335,30 @@ def r_cross_barcode(X: np.array, Y: np.array, maxdim: int = 1):
 
 
 def mtd(X: np.array, Y: np.array, maxdim: int = 1):
+    """
+    Computes the MTD scores for two point clouds.
+
+    Parameters:
+    X (np.array): First point cloud.
+    Y (np.array): Second point cloud.
+    maxdim (int): Maximum dimension of the homology group to compute.
+
+    Returns:
+    np.ndarray: MTD scores.
+    """
     return persistence_norm(cross_barcode(X, Y, maxdim))
 
 
 def rtd(X: np.array, Y: np.array, maxdim: int = 1):
+    """
+    Computes the RTD scores for two point clouds.
+
+    Parameters:
+    X (np.array): First point cloud.
+    Y (np.array): Second point cloud.
+    maxdim (int): Maximum dimension of the homology group to compute.
+
+    Returns:
+    np.ndarray: RTD scores.
+    """
     return persistence_norm(r_cross_barcode(X, Y, maxdim))
