@@ -136,22 +136,22 @@ def pca(X: np.ndarray, explained_variance: float = 0.95):
     return np.searchsorted(np.cumsum(S), explained_variance, side="right") + 1
 
 
-def cluster_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95):
-    """
-    Computes PCA for each cluster of data points using KMeans clustering.
+# def cluster_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95):
+#     """
+#     Computes PCA for each cluster of data points using KMeans clustering.
 
-    Parameters:
-    X (np.ndarray): Input data matrix with shape (n_samples, n_features).
-    k (int): Number of clusters for KMeans.
-    explained_variance (float): The fraction of variance to explain in PCA.
+#     Parameters:
+#     X (np.ndarray): Input data matrix with shape (n_samples, n_features).
+#     k (int): Number of clusters for KMeans.
+#     explained_variance (float): The fraction of variance to explain in PCA.
 
-    Returns:
-    np.ndarray: Array of principal component counts for each cluster.
-    """
-    labels = KMeans(n_clusters=int(X.shape[0] / k)).fit(X)
-    return np.array([
-        PCA(n_components=explained_variance).fit(X[labels == l]).n_components_ for l in range(int(X.shape[0] / k))
-    ])
+#     Returns:
+#     np.ndarray: Array of principal component counts for each cluster.
+#     """
+#     labels = KMeans(n_clusters=int(X.shape[0] / k)).fit(X)
+#     return np.array([
+#         PCA(n_components=explained_variance).fit(X[labels == l]).n_components_ for l in range(int(X.shape[0] / k))
+#     ])
 
 
 def local_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95):
