@@ -12,7 +12,7 @@ from sklearn.cluster import KMeans
 # from .homology import vr_diagrams, drop_inf
 # from .information import entropy
 # from intrinsic.utils.math import beta1, beta1_intercept
-from intrinsic.utils.math import beta1
+from utils.math import beta1
 
 
 # def information(X: np.ndarray):
@@ -51,17 +51,21 @@ from intrinsic.utils.math import beta1
 #     return np.abs(beta1_intercept(np.log(d), np.log(c)))
 
 
-def mle(X: np.ndarray, k: int = 5, distances: bool = False):
+def mle(X: np.ndarray, k: int = 5, distances: bool = False) -> np.ndarray:
     """
-    Computes the Intrinsic dimension (ID) by Maximum Likelihood Estimation (MLE) for the point cloud distances.
+    Computes the intrinsic dimension (ID) by Maximum Likelihood Estimation (MLE) for the point cloud distances.
 
-    Parameters:
-    X (np.ndarray): Input point cloud with shape (n_samples, n_features).
-    k (int): Number of nearest neighbors to consider.
-    distances (bool): Whether X is already a distance matrix. If False, distances are computed.
+    Args:
+        X (np.ndarray): 
+            Input point cloud with shape (n_samples, n_features).
+        k (int): 
+            Number of nearest neighbors to consider.
+        distances (bool): 
+            Whether `X` is already a distance matrix. If False, distances are computed.
 
     Returns:
-    np.ndarray: ID values for each point.
+        np.ndarray: 
+            ID values for each point.
     """
     nn = NearestNeighbors(n_neighbors=k, metric='precomputed' if distances else 'minkowski').fit(X)
     dist, _ = nn.kneighbors()
@@ -69,17 +73,21 @@ def mle(X: np.ndarray, k: int = 5, distances: bool = False):
     return (k - 1) / np.log(np.expand_dims(dist[:, -1], 1) / dist).sum(axis=-1)
 
 
-def mm(X: np.ndarray, k: int = 5, distances: bool = False):
+def mm(X: np.ndarray, k: int = 5, distances: bool = False) -> np.ndarray:
     """
-    Computes the Intrinsic dimension (ID) by MM for the point cloud distances.
+    Computes the intrinsic dimension (ID) by Method of Moments (MM) for the point cloud distances.
 
-    Parameters:
-    X (np.ndarray): Input point cloud with shape (n_samples, n_features).
-    k (int): Number of nearest neighbors to consider.
-    distances (bool): Whether X is already a distance matrix. If False, distances are computed.
+    Args:
+        X (np.ndarray): 
+            Input point cloud with shape (n_samples, n_features).
+        k (int): 
+            Number of nearest neighbors to consider.
+        distances (bool): 
+            Whether `X` is already a distance matrix. If False, distances are computed.
 
     Returns:
-    np.ndarray: ID values for each point.
+        np.ndarray: 
+            ID values for each point.
     """
     nn = NearestNeighbors(n_neighbors=k, metric='precomputed' if distances else 'minkowski').fit(X)
     dist, _ = nn.kneighbors()
@@ -105,35 +113,62 @@ def mm(X: np.ndarray, k: int = 5, distances: bool = False):
 #     return d
 
 
-def pca_sklearn(X: np.ndarray, explained_variance: float = 0.95):
+def pca_sklearn(X: np.ndarray, explained_variance: float = 0.95) -> int:
     """
     Computes the number of principal components required to explain a given variance using sklearn PCA.
 
-    Parameters:
-    X (np.ndarray): Input data matrix with shape (n_samples, n_features).
-    explained_variance (float): The fraction of variance to explain.
+    Args:
+        X (np.ndarray): 
+            Input data matrix with shape (n_samples, n_features).
+        explained_variance (float): 
+            The fraction of variance to explain.
 
     Returns:
-    int: The number of principal components needed.
+        int: 
+            The number of principal components needed.
     """
     return PCA(n_components=explained_variance).fit(X).n_components_
 
 
-def pca(X: np.ndarray, explained_variance: float = 0.95):
+def pca(X: np.ndarray, explained_variance: float = 0.95) -> int:
     """
     Computes the number of principal components required to explain a given variance using SVD-based PCA.
 
-    Parameters:
-    X (np.ndarray): Input data matrix with shape (n_samples, n_features).
-    explained_variance (float): The fraction of variance to explain.
+    Args:
+        X (np.ndarray): 
+            Input data matrix with shape (n_samples, n_features).
+        explained_variance (float): 
+            The fraction of variance to explain.
 
     Returns:
-    int: The number of principal components needed.
+        int: 
+            The number of principal components needed.
     """
     X -= X.mean(axis=-2)
     S = np.square(np.linalg.svd(X, compute_uv=False))
     S /= S.sum()
     return np.searchsorted(np.cumsum(S), explained_variance, side="right") + 1
+
+
+def local_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95) -> np.ndarray:
+    """
+    Computes PCA for each point based on its local neighborhood.
+
+    Args:
+        X (np.ndarray): 
+            Input data matrix with shape (n_samples, n_features).
+        k (int): 
+            Number of nearest neighbors to consider for PCA.
+        explained_variance (float): 
+            The fraction of variance to explain in PCA.
+
+    Returns:
+        np.ndarray: 
+            Array of principal component counts for each point based on its local neighborhood.
+    """
+    nn = NearestNeighbors(n_neighbors=k).fit(X)
+    _, ix = nn.kneighbors()
+    return np.array([pca(X[ix[i]], explained_variance) for i in range(X.shape[0])])
 
 
 # def cluster_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95):
@@ -154,33 +189,19 @@ def pca(X: np.ndarray, explained_variance: float = 0.95):
 #     ])
 
 
-def local_pca(X: np.ndarray, k: int = 5, explained_variance: float = 0.95):
+def two_nn(X: np.ndarray, distances: bool = False) -> float:
     """
-    Computes PCA for each point based on its local neighborhood.
+    Computes the intrinsic dimension (ID) by TwoNN method.
 
-    Parameters:
-    X (np.ndarray): Input data matrix with shape (n_samples, n_features).
-    k (int): Number of nearest neighbors to consider for PCA.
-    explained_variance (float): The fraction of variance to explain in PCA.
+    Args:
+        X (np.ndarray): 
+            Input data matrix with shape (n_samples, n_features).
+        distances (bool): 
+            Whether `X` is already a distance matrix. If False, distances are computed.
 
     Returns:
-    np.ndarray: Array of principal component counts for each point based on its local neighborhood.
-    """
-    nn = NearestNeighbors(n_neighbors=k).fit(X)
-    _, ix = nn.kneighbors()
-    return np.array([pca(X[ix[i]], explained_variance) for i in range(X.shape[0])])
-
-
-def two_nn(X: np.ndarray, distances: bool = False):
-    """
-    Computes the Intrinsic dimension (ID) by TwoNN method.
-
-    Parameters:
-    X (np.ndarray): Input data matrix with shape (n_samples, n_features).
-    distances (bool): Whether X is already a distance matrix. If False, distances are computed.
-
-    Returns:
-    float: ID.
+        float: 
+            ID.
     """
     n = X.shape[0]
     nn = NearestNeighbors(n_neighbors=2, metric='precomputed' if distances else 'minkowski').fit(X)
