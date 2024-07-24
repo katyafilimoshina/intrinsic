@@ -6,3 +6,4 @@ matplotlib
 seaborn
 persim
 pot
+os
