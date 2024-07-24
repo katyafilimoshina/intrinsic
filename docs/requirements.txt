@@ -1,9 +1,7 @@
 numpy
 torch
 scipy
-sklearn
+scikit-learn
 matplotlib
 seaborn
 persim
-pot
-os
