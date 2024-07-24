@@ -7,7 +7,7 @@ functional
 Curvature
 ---------------------------
 
-.. automodule:: functional.curvature
+.. automodule:: intrinsic.functional.curvature
    :members:
    :undoc-members:
    :show-inheritance:
