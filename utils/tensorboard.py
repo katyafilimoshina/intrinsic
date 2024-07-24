@@ -10,10 +10,12 @@ def draw_heatmap(d: np.ndarray):
     Draws a heatmap from a given matrix.
 
     Parameters:
-    d (np.ndarray): Input matrix.
+        d (np.ndarray): 
+            Input matrix.
 
     Returns:
-    plt.Figure: Figure with the heatmap.
+        plt.Figure: 
+            Figure with the heatmap.
     """
     fig, ax = plt.subplots()
     ax.imshow(d)
@@ -29,10 +31,12 @@ def plot_persistence(dgm: list[np.ndarray]):
     Plots persistence diagrams.
 
     Parameters:
-    dgm (list[np.ndarray]): Persistence diagrams of the form [dimension, birth time, death time].
+        dgm (list[np.ndarray]): 
+            Persistence diagrams of the form [dimension, birth time, death time].
 
     Returns:
-    plt.Figure: Figure with the persistence diagram plotted.
+        plt.Figure: 
+            Figure with the persistence diagram plotted.
     """
     # TODO: make our own version
     fig = plt.figure()
@@ -45,10 +49,12 @@ def plot_persistence_each(dgms: list) -> plt.Figure:
     Plots each persistence diagram separately for different dimensions of holes.
 
     Parameters:
-    dgms (list): List of sets of persistence diagrams of the form [dimension, birth time, death time].
+        dgms (list): 
+            List of sets of persistence diagrams of the form [dimension, birth time, death time].
 
     Returns:
-    plt.Figure: Figure with all persistence diagrams plotted separately.
+        plt.Figure: 
+            Figure with all persistence diagrams plotted separately.
     """
     fig, _ = plt.subplots(1, len(dgms))
     for i in range(len(dgms)):
@@ -75,11 +81,14 @@ def plot_betti(bc: np.ndarray, ax: plt.Axes = None) -> [plt.Figure, plt.Axes]:
     Plots Betti curves.
 
     Parameters:
-    bc (np.ndarray): A set of Betti curves.
-    ax (plt.Axes, optional): Axes to plot on. If None, a new figure is created.
+        bc (np.ndarray): 
+            A set of Betti curves.
+        ax (plt.Axes, optional): 
+            Axes to plot on. If None, a new figure is created.
 
     Returns:
-    plt.Figure, plt.Axes: The figure and axes with Betti curves drawn.
+        plt.Figure, plt.Axes: 
+            The figure and axes with Betti curves drawn.
     """
     ax = ax or plt.figure()
     for dim in range(bc.shape[0]):
@@ -117,11 +126,14 @@ def plot_dimension(dim: list[np.ndarray], columns: list[str]) -> plt.Figure:
     Plots a bar chart comparing different dimension estimates.
 
     Parameters:
-    dim (list[np.ndarray]): List of different dimension estimates. Each element in the list is an array of estimates from a different method.
-    columns (list[str]): List of strings representing the labels for each dimension estimation method.
+        dim (list[np.ndarray]): 
+            List of different dimension estimates. Each element in the list is an array of estimates from a different method.
+        columns (list[str]): 
+            List of strings representing the labels for each dimension estimation method.
 
     Returns:
-    plt.Figure: A Matplotlib figure object with the pairwise comparison chart.
+        plt.Figure: 
+            A Matplotlib figure object with the pairwise comparison chart.
     """
     plot = pd.DataFrame(dim, columns).plot(kind='bar', legend=False)
     plt.xlabel('Method')
