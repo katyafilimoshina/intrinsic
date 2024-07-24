@@ -20,7 +20,7 @@ Geometry and topology properties of
 * CIFAR-10 images embeddings on different layers obtained by **VGG-16**: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1JPPNVgKRCnlRZhZAFgpgWxDNeBHk25AK?usp=sharing)
 * MNIST images embeddings on different layers obtained by **SimCLR**:
     * transformations ...:
-    * transformations ...:
+    * resize-crop + rotation(0,179) transformations: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1FNijhES_qEzJxaKSvdlACRnlvvLNaAE2?usp=sharing)
 * CIFAR-10 images embeddings on different layers obtained by **SimCLR**:
     * transformations ...:
     * transformations ...:
