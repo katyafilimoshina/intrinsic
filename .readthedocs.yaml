@@ -2,13 +2,18 @@
 
 version: 2
 
-python:
-  version: 3.8
-  install:
-    - method: pip
-      path: .
-    - requirements: docs/requirements.txt
+# Build environment configuration
+build:
+  os: ubuntu-20.04
+  tools:
+    python:
+      version: "3.8"
+      install:
+        - method: pip
+          path: .
+        - requirements: docs/requirements.txt    
 
+  
 # Sphinx configuration
 sphinx:
   configuration: docs/source/conf.py
