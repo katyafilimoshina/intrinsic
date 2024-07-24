@@ -1,0 +1,8 @@
+numpy
+torch
+scipy
+sklearn
+matplotlib
+seaborn
+persim
+pot
