@@ -10,7 +10,18 @@ def image_to_cloud(X: np.ndarray, channel_first: bool = False):
     return X.reshape(X.shape[0] * X.shape[1], X.shape[2])
 
 
-def unique_points(X: np.ndarray):
+def unique_points(X: np.ndarray) -> np.ndarray:
+    """
+    Returns unique points from the input array.
+
+    Parameters:
+        X (np.ndarray): 
+            Input array of points.
+
+    Returns:
+        np.ndarray: 
+            Array of unique points.
+    """
     return np.unique(X, axis=-2)
 
 
@@ -19,7 +30,18 @@ def compute_unique_distances(X: np.ndarray) -> np.ndarray:
     return distance_matrix(X, X)
 
 
-def mle_aggregate(dim: np.ndarray):
+def mle_aggregate(dim: np.ndarray) -> float:
+    """
+    Computes the maximum likelihood estimate (MLE) aggregate of Intrinsic dimension (ID) for the input array.
+
+    Parameters:
+        dim (np.ndarray): 
+            Input array.
+
+    Returns:
+        float: 
+            MLE aggregate.
+    """
     return 1 / np.mean(1 / dim)
 
 
@@ -27,7 +49,18 @@ def mle_aggregate_torch(dim: torch.Tensor):
     return 1 / torch.mean(1 / dim, dim=-1)
 
 
-def inf_mask(arr: np.ndarray):
+def inf_mask(arr: np.ndarray) -> np.ndarray:
+    """
+    Creates a mask for infinite values in the input array.
+
+    Parameters:
+        arr (np.ndarray): 
+            Input array.
+
+    Returns:
+        np.ndarray: 
+            Mask array with True for infinite values.
+    """
     return np.ma.fix_invalid(arr).mask
 
 
@@ -67,8 +100,22 @@ def boundary_matrix(gens: np.ndarray, x: np.ndarray):
     return np.logical_or.reduce(gens.reshape(*gens.shape, 1) == x.reshape(1, -1), axis=-2).astype(int)
 
 
+
 def beta1(x: np.ndarray, y: np.ndarray) -> float:
-    return np.sum(x*y) / np.square(x).sum()
+    """
+    Computes the normalized scalar product for the input arrays.
+
+    Parameters:
+        x (np.ndarray): 
+            First input array.
+        y (np.ndarray): 
+            Second input array.
+
+    Returns:
+        float: 
+            Beta1 statistic.
+    """
+    return np.sum(x * y) / np.square(x).sum()
 
 
 def beta1_intercept(x: np.ndarray, y: np.ndarray) -> float:
@@ -100,6 +147,21 @@ def set_ops(X: torch.Tensor, Y: torch.Tensor) -> tuple:
 
 
 def extended_distance(diagX: np.ndarray, diagY: np.ndarray, q: float) -> np.ndarray:
+    """
+    Computes the extended distance matrix for two persistence diagrams.
+
+    Parameters:
+        diagX (np.ndarray): 
+            First persistence diagram.
+        diagY (np.ndarray): 
+            Second persistence diagram.
+        q (float): 
+            Exponent for the distance.
+
+    Returns:
+        np.ndarray: 
+            Extended distance matrix.
+    """
     diagXp, diagYp = diagX.mean(axis=1) / 2, diagY.mean(axis=1) / 2
     return np.power(np.block(
         [
@@ -107,8 +169,18 @@ def extended_distance(diagX: np.ndarray, diagY: np.ndarray, q: float) -> np.ndar
              np.max(np.abs(diagX.reshape(-1, 1, 2) - diagXp), axis=-1)],
             [np.max(np.abs(diagYp.reshape(-1, 1, 2) - diagY), axis=-1), np.zeros((diagYp.shape[0], diagXp.shape[0]))]
         ]
-    ), 1 if q == np.inf else q)  # (X1, ..., Xn, Y1', ..., Ym') x (Y1, ..., Ym, X1', ..., Xn')
-
+    ), 1 if q == np.inf else q)
 
 def unit_ball_volume(n: float) -> float:
+    """
+    Computes the volume of an n-dimensional unit ball.
+
+    Parameters:
+        n (float): 
+            Dimension of the ball.
+
+    Returns:
+        float: 
+            Volume of the n-dimensional unit ball.
+    """
     return np.sqrt(np.power(np.pi, n)) / gamma(n / 2 + 1)
