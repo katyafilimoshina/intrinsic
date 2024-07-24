@@ -1,7 +1,9 @@
 # intrinsic: geometry and topology methods for DL
 
 ## Abstract
-This repository contains implementation of `intrinsic` package with geometry and topology methods for topological data analysis. It provides tools to compute persistent homology, generate persistence diagrams, calculate total persisentce, persistence entropy, Betti numbers, Euler characteristics, intrinsic dimension (via MLE, MM, PCA, TwoNN), curvature, and magnitude of data representations. The detailed description of these properties can be found at ...[pdf overleaf]...
+This repository contains implementation of `intrinsic` package with geometry and topology methods for topological data analysis. It provides tools to compute persistent homology, generate persistence diagrams, calculate total persisentce, persistence entropy, Betti numbers, Euler characteristics, intrinsic dimension (via MLE, MM, PCA, TwoNN), curvature, and magnitude of data representations. 
+
+The detailed description of these properties can be found at ...[pdf overleaf]...
 
 ## Code Organization
 * `functional/`: Contains implementation of `intrinsic` functional.
