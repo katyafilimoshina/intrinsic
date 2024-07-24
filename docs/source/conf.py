@@ -9,7 +9,8 @@
 import os
 import sys
 import sphinx_rtd_theme
-sys.path.insert(0, r'C:\Users\filim\intrinsic')
+sys.path.insert(0, os.path.abspath('../..'))
+# sys.path.insert(0, r'C:\Users\filim\intrinsic')
 # sys.path.insert(0, os.path.abspath("C:\Users\filim\intrinsic\utils"))
 # sys.path.insert(0, os.path.abspath("C:\Users\filim\intrinsic\functional"))
 
