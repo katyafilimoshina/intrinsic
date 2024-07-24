@@ -19,7 +19,7 @@ The detailed description of these properties can be found at ...[pdf overleaf]..
 Geometry and topology properties of
 * CIFAR-10 images embeddings on different layers obtained by **VGG-16**: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1JPPNVgKRCnlRZhZAFgpgWxDNeBHk25AK?usp=sharing)
 * MNIST images embeddings on different layers obtained by **SimCLR**:
-    * transformations ...:
+    * rotation (0,360) transformation: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1WQ8OcvCShkSVj3RoZBKlf-KVoScgqcKK?usp=sharing)
     * resize-crop + flip + rotation(0,179) transformations: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1FNijhES_qEzJxaKSvdlACRnlvvLNaAE2?usp=sharing)
     * resize-crop + rotation(0,179) transformations: [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1c2sIAYLRQhMY-j2p-8Vjwi6c9j6sj03s?usp=sharing)
 * CIFAR-10 images embeddings on different layers obtained by **SimCLR**:
