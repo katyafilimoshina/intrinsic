@@ -1,8 +1,6 @@
 Sphinx>=4.0
 sphinx-rtd-theme
 pandas
-scipy.special
-scipy.spatial
 numpy
 torch
 scipy
